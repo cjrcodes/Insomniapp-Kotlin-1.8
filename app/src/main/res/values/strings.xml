@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Insomniapp Kotlin 1.8</string>
+    <!--
+    This string is used for square devices and overridden by hello_world in
+    values-round/strings.xml for round devices.
+    -->
+    <string name="hello_world">From the Square world,\nHello, %1$s!</string>
+    <string name="select_time_picker">Select a time in minutes</string>
+    <string name="add_alarm_button">Add alarm</string>
+</resources>
