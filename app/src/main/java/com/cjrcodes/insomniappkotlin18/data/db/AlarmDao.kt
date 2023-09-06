@@ -6,11 +6,12 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface AlarmDao {
     @Query("SELECT * FROM alarms")
-    fun getAll(): List<Alarm>
+    fun getAll(): Flow<List<Alarm>>
 
     @Query("SELECT * FROM alarms WHERE id = :id")
     fun getById(id: Int): Alarm?
@@ -28,5 +29,5 @@ interface AlarmDao {
     fun delete(alarm: Alarm)
 
     @Query("DELETE FROM alarms")
-    fun deleteAll();
+    fun deleteAll()
 }

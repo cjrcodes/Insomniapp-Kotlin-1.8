@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,15 +17,13 @@ import androidx.wear.compose.material.Chip
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
-import com.cjrcodes.insomniappkotlin18.presentation.WearApp
 import java.time.format.DateTimeFormatter
-import java.util.Random
 import java.util.concurrent.ThreadLocalRandom
 
 @Composable
 fun AlarmChip(alarm: Alarm) {
 
-    val formatter = DateTimeFormatter.ofPattern("HH:mm");
+    val formatter = DateTimeFormatter.ofPattern("HH:mm")
 
     Box(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -44,7 +41,7 @@ fun AlarmChip(alarm: Alarm) {
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colors.onPrimary,
-                    text = "${alarm.getFormattedTime()} / ${alarm.maxHeartRateThreshold} BPM"
+                    text = "${alarm.time} Minutes"
                 )
             },
             onClick = {}
@@ -59,13 +56,12 @@ fun AlarmChip(alarm: Alarm) {
 fun AlarmChipPreview() {
     val random = ThreadLocalRandom.current()
     val randomMinute = random.nextInt(0, 60)
-    val randomSecond = if (randomMinute == 60) "00" else random.nextInt(0, 60)
+    /*val randomSecond = if (randomMinute == 60) "00" else random.nextInt(0, 60)
 
-    val randomMaxHeartRate = random.nextInt(40, 120)
+    val randomMaxHeartRate = random.nextInt(40, 120)*/
 
     val alarm = Alarm(
-        time = "$randomMinute:$randomSecond",
-        maxHeartRateThreshold = randomMaxHeartRate
+        time = randomMinute
     )
 
     AlarmChip(alarm)

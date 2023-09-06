@@ -1,9 +1,7 @@
 package com.cjrcodes.insomniappkotlin18.utility
 
-import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import java.util.concurrent.ThreadLocalRandom
-import kotlin.random.Random
 
 class RandomAlarmDataGenerator {
     fun generateRandomData(size: Int): List<Alarm> {
@@ -14,11 +12,11 @@ class RandomAlarmDataGenerator {
 
         for (i in 0 until size) {
             val randomMinute = random.nextInt(0, 60)
-            val randomSecond = if (randomMinute == 60) 0 else random.nextInt(0, 60)
+          /*  val randomSecond = if (randomMinute == 60) 0 else random.nextInt(0, 60)
             val randomTime = "$randomMinute:$randomSecond"
-            val randomMaxHeartRate = random.nextInt(40, 120)
+            val randomMaxHeartRate = random.nextInt(40, 120)*/
 
-            alarms.add(Alarm(randomTime, randomMaxHeartRate))
+            alarms.add(Alarm(randomMinute))
         }
         return alarms
 

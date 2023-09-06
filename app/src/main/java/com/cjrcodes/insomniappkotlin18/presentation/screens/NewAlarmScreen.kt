@@ -4,19 +4,20 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -24,81 +25,144 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Picker
-import androidx.wear.compose.material.PickerState
 import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.ScalingLazyColumn
-import androidx.wear.compose.material.ScalingLazyListState
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
-import androidx.wear.compose.material.rememberScalingLazyListState
-import com.chargemap.compose.numberpicker.FullHours
-import com.chargemap.compose.numberpicker.Hours
-import com.chargemap.compose.numberpicker.HoursNumberPicker
-import com.chargemap.compose.numberpicker.NumberPicker
-import com.cjrcodes.insomniappkotlin18.R
-import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
-import com.cjrcodes.insomniappkotlin18.presentation.composable.AddAlarmButton
-import com.cjrcodes.insomniappkotlin18.presentation.composable.AlarmChip
-import com.cjrcodes.insomniappkotlin18.presentation.composable.VerticalPicker
+import androidx.wear.compose.material.rememberPickerState
+import com.cjrcodes.insomniappkotlin18.data.model.Alarm
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.presentation.composable.CreateAlarmButton
+import com.cjrcodes.insomniappkotlin18.presentation.destinations.WearAppDestination
 import com.cjrcodes.insomniappkotlin18.presentation.theme.InsomniappKotlin18Theme
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
+
 
 @Destination
 @Composable
-fun NewAlarmScreen() {
+fun NewAlarmScreen(navController: DestinationsNavigator) {
 
-    InsomniappKotlin18Theme {
-        Scaffold(
-            timeText = {
-                TimeText()
-            }
-        ) {
-            /* If you have enough items in your list, use [ScalingLazyColumn] which is an optimized
-             * version of LazyColumn for wear devices with some added features. For more information,
-             * see d.android.com/wear/compose.
-             */
+    val newAlarmViewModel: NewAlarmViewModel = hiltViewModel()
 
-            val scalingLazyListState = rememberScalingLazyListState();
-            val focusRequester = remember { FocusRequester() }
-            val coroutineScope = rememberCoroutineScope()
 
-            ScalingLazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .fillMaxSize()
-                    .background(
-                        color = MaterialTheme.colors.onPrimary,
-                    ),
+    val alarmCreated: State<Boolean> =
+        newAlarmViewModel.alarmCreated.collectAsState(initial = false)
 
-                verticalArrangement = Arrangement.Center,
-            state = scalingLazyListState
-            ) {
-
-                item {
-                    //var numberPickerState = remember { mutableStateOf(NumberPicker.State()) }
-                    val numbers = (1..60).toList()
-                    val numbersState = remember { mutableStateOf(numbers) }
-                    val pickerState by remember { mutableStateOf(PickerState(1)) }
-
-                    val contentDescription by remember { derivedStateOf { "${pickerState.selectedOption + 1}" } }
-
-                    //VerticalPicker()
-                }
-            }
+// When alarmCreated becomes true, navigate to the next screen
+    LaunchedEffect(alarmCreated.value) {
+        if (alarmCreated.value) {
+            navController.navigate(WearAppDestination)
         }
     }
 
+    val minutesVal = remember { mutableIntStateOf(5) }
+
+    InsomniappKotlin18Theme {
+
+        NewAlarmContent(minutesVal = minutesVal
+        ) { createAlarm(newAlarmViewModel, minutesVal ) }
+    }
+}
+
+
+@Composable
+fun NewAlarmContent(
+    minutes: List<String> = (1..60).map { it.toString() },
+    minutesVal: MutableState<Int>,
+    onCreateAlarmClick: () -> Unit
+) {
+
+    val coroutineScope = rememberCoroutineScope()
+    val pickerState = rememberPickerState(minutes.size, 4, true)
+    val focusRequester = remember { FocusRequester() }
+    val contentDescription by remember { derivedStateOf { "${pickerState.selectedOption + 1}" } }
+
+    Scaffold(
+
+
+        modifier = Modifier
+            .background(
+                color = MaterialTheme.colors.onPrimary,
+            ),
+
+    timeText = {TimeText()}
+    ) {
+        Column(
+            modifier =
+            Modifier
+                .fillMaxSize()
+                .background(
+                    color = MaterialTheme.colors.onPrimary,
+                ),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.CenterHorizontally
+
+        ) {
+
+
+            Text(
+                modifier = Modifier.padding(start = 0.dp, top = 24.dp, end = 0.dp, bottom = 0.dp)
+                    .align(Alignment.CenterHorizontally),
+                text = "Minutes",
+                style = TextStyle(color = Color.White)
+            )
+
+            Picker(
+                modifier = Modifier
+
+                    .size(100.dp, 100.dp)
+                    .align(Alignment.CenterHorizontally)
+                    .onRotaryScrollEvent {
+                        coroutineScope.launch {
+                            pickerState.scrollBy(
+                                it.verticalScrollPixels
+                            )
+                        }
+                        true
+                    }
+                    .focusRequester(focusRequester)
+                    .focusable(),
+                state = pickerState,
+                separation = 10.dp,
+                contentDescription = contentDescription,
+                userScrollEnabled = true
+            ) {
+                Text(minutes[it])
+                minutesVal.value = it
+
+            }
+
+
+            CreateAlarmButton(onClick = onCreateAlarmClick)
+
+        }
+
+    }
+}
+
+
+fun createAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
+    newAlarmViewModel.createNewAlarm(Alarm(minutesVal.value))
 }
 
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
 fun NewAlarmScreenPreview() {
-    NewAlarmScreen()
+
+    //NewAlarmScreen(EmptyDestinationsNavigator)
+    val viewModel = MockNewAlarmViewModel()
+    val minutesVal = remember { mutableIntStateOf(5) }
+
+    NewAlarmContent(
+        minutesVal = minutesVal,
+        onCreateAlarmClick = {}
+    )
 }

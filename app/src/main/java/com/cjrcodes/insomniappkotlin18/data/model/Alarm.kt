@@ -3,16 +3,13 @@ package com.cjrcodes.insomniappkotlin18.data.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
 
 @Entity(tableName = "alarms")
 data class Alarm(
-    @ColumnInfo(name ="time")val time: String,
-    @ColumnInfo(name ="maxHeartRate")val maxHeartRateThreshold: Int,
+    @ColumnInfo(name ="time")val time: Int,
     @PrimaryKey(autoGenerate = true) val id: Long = 0
 ) {
-    private fun parseTime(time: String): LocalTime {
+    /*private fun parseTime(time: String): LocalTime {
         val formatter = DateTimeFormatter.ofPattern("h : m")
         return LocalTime.parse(time, formatter)
     }
@@ -28,7 +25,7 @@ data class Alarm(
         }
 
         return "$minutes:$seconds";
-    }
+    }*/
 
 
 }
