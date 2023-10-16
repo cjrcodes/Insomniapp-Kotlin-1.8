@@ -1,5 +1,9 @@
 package com.cjrcodes.insomniappkotlin18.data.db.mock
 
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.Update
 import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import kotlinx.coroutines.flow.Flow
@@ -7,45 +11,43 @@ import kotlinx.coroutines.flow.flowOf
 
 class MockAlarmDao: AlarmDao {
 
-    private val mockData: MutableList<Alarm> = mutableListOf(
-        Alarm(12, 40),
-        Alarm(13, 40),
-        Alarm(5, 70),
-        Alarm(60, 120),
-        Alarm(20),
-       /* Alarm("6:00", 120),
-        Alarm("7:30", 90),
-        Alarm("8:00", 69),
-        Alarm("9:15", 110),
-        Alarm("10:00", 75),
-        Alarm("60:00", 40)*/
-    )
-    override fun getAll(): Flow<List<Alarm>> {
-        return flowOf(mockData)
+        @Query("SELECT * FROM alarms")
+    override fun getAll() : Flow<List<Alarm>>{
+        return flowOf(
+            listOf(
+                Alarm(5),
+                Alarm(10),
+                Alarm(15),
+                Alarm(30),
+                Alarm(45),
+                Alarm(60)
+            )
+        )
     }
 
-    override fun getById(id: Int): Alarm? {
-        TODO("Not yet implemented")
+
+    @Query("SELECT * FROM alarms WHERE id = :id")
+    override fun getById(id: Int): Alarm?{
+        return Alarm(5)
     }
 
-    override fun findAlarmByTime(time: String): Alarm? {
-        TODO("Not yet implemented")
-    }
+    @Query("SELECT * FROM alarms WHERE time = :time")
+    override fun findAlarmByTime(time: String): Alarm?{
+        return Alarm(5)}
 
+    @Insert
     override fun insert(alarm: Alarm): Long {
-        TODO("Not yet implemented")
+return 5
     }
 
-    override fun update(alarm: Alarm) {
-        TODO("Not yet implemented")
-    }
+    @Update
+    override fun update(alarm: Alarm)       {}
 
-    override fun delete(alarm: Alarm) {
-        TODO("Not yet implemented")
-    }
+    @Delete
+    override fun delete(alarm: Alarm)    {}
 
-    override fun deleteAll() {
-        TODO("Not yet implemented")
-    }
+    @Query("DELETE FROM alarms")
+    override fun deleteAll()    {}
+
 
 }

@@ -35,6 +35,7 @@ import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.rememberPickerState
+import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
@@ -158,7 +159,7 @@ fun createAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
 fun NewAlarmScreenPreview() {
 
     //NewAlarmScreen(EmptyDestinationsNavigator)
-    val viewModel = MockNewAlarmViewModel()
+    val mockNewAlarmViewModel = MockNewAlarmViewModel(MockAlarmDao())
     val minutesVal = remember { mutableIntStateOf(5) }
 
     NewAlarmContent(

@@ -9,8 +9,12 @@ import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,6 +22,11 @@ import javax.inject.Inject
 open class NewAlarmViewModel @Inject constructor(
     private val alarmDao: AlarmDao
 ) : ViewModel() {
+
+    open val alarms: Flow<List<Alarm>> = alarmDao.getAll()
+        .onStart { emit(emptyList()) }
+        .catch { emit(emptyList()) }
+        .distinctUntilChanged()
 
     private lateinit var lifecycleOwner: LifecycleOwner
     /*  private val _alarmCreated = mutableStateOf(false)
@@ -28,7 +37,7 @@ open class NewAlarmViewModel @Inject constructor(
           }*/
 
     private val _alarmCreated = MutableStateFlow(false)
-    val alarmCreated: StateFlow<Boolean> get() = _alarmCreated
+    open val alarmCreated: StateFlow<Boolean> get() = _alarmCreated
 
     fun setLifecycleOwner(lifecycleOwner: LifecycleOwner) {
         this.lifecycleOwner = lifecycleOwner
@@ -37,12 +46,14 @@ open class NewAlarmViewModel @Inject constructor(
     val myData = alarmDao.getAll().asLiveData()
 
 
-    fun createNewAlarm(alarm: Alarm) {
+    open fun createNewAlarm(alarm: Alarm) {
         viewModelScope.launch(Dispatchers.IO) {
             val alarmId = alarmDao.insert(alarm)
             _alarmCreated.value = true
         }
     }
+
+
 }
 
 class NewAlarmModelPreview(val dynamicValue: StateFlow<String> = MutableStateFlow("no data")) :
