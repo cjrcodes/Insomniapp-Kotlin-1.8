@@ -9,10 +9,10 @@ import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class MockAlarmDao: AlarmDao {
+class MockAlarmDao : AlarmDao {
 
-        @Query("SELECT * FROM alarms")
-    override fun getAll() : Flow<List<Alarm>>{
+    @Query("SELECT * FROM alarms")
+    override fun getAll(): Flow<List<Alarm>> {
         return flowOf(
             listOf(
                 Alarm(5),
@@ -27,27 +27,31 @@ class MockAlarmDao: AlarmDao {
 
 
     @Query("SELECT * FROM alarms WHERE id = :id")
-    override fun getById(id: Int): Alarm?{
+    override fun getById(id: Int): Alarm? {
         return Alarm(5)
     }
 
     @Query("SELECT * FROM alarms WHERE time = :time")
-    override fun findAlarmByTime(time: String): Alarm?{
-        return Alarm(5)}
+    override fun findAlarmByTime(time: String): Alarm? {
+        return Alarm(5)
+    }
 
     @Insert
     override fun insert(alarm: Alarm): Long {
-return 5
+        return 5
     }
 
     @Update
-    override fun update(alarm: Alarm)       {}
+    override fun update(alarm: Alarm) {
+    }
 
     @Delete
-    override fun delete(alarm: Alarm)    {}
+    override fun delete(alarm: Alarm) {
+    }
 
     @Query("DELETE FROM alarms")
-    override fun deleteAll()    {}
+    override fun deleteAll() {
+    }
 
 
 }

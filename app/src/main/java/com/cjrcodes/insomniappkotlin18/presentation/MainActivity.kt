@@ -10,13 +10,22 @@ package com.cjrcodes.insomniappkotlin18.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
+
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.Scaffold
+import androidx.wear.compose.material.Text
 import androidx.wear.compose.material.TimeText
 import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
 import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
@@ -86,7 +95,15 @@ fun WearApp(viewModel: NewAlarmViewModel, navigator: DestinationsNavigator) {
     InsomniappKotlin18Theme {
         Scaffold(timeText = {
             TimeText()
+            Text(
+                text = "Minutes",
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset(y = 15.dp)
+            )
         }) {
+
             TileAlarmScreen(
                 viewModel,
                 navController = navigator,

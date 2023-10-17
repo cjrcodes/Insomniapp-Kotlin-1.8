@@ -50,7 +50,9 @@ fun TileAlarmScreen(
         ),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize() // fill the entire screen
+        modifier = Modifier.fillMaxSize(),
+        userScrollEnabled = false
+
     ) {
 
         items(alarms.dropLast(1).chunked(3)) { alarms ->
@@ -79,17 +81,18 @@ fun TileAlarmScreen(
         }
 
         /*item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
-                verticalAlignment = Alignment.CenterVertically // center items vertically
-            ) {
-                AlarmButton(Alarm(60)) { }
-                AddAlarmButton(onClick = onAddAlarmClick)
-                StatisticsMenuButton(onClick = onStatisticsMenuClick)
-            }
-        }*/
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
+            verticalAlignment = Alignment.CenterVertically // center items vertically
+        ) {
+            AlarmButton(Alarm(60)) { }
+            AddAlarmButton(onClick = onAddAlarmClick)
+            StatisticsMenuButton(onClick = onStatisticsMenuClick)
+        }
+    }*/
     }
 }
+
 
 /*fun TileAlarmScreen(alarms: List<Alarm>, navController: DestinationsNavigator) {
 
