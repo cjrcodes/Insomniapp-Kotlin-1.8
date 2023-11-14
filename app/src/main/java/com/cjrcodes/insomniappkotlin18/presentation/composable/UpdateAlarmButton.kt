@@ -18,7 +18,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 
 @Composable
-fun CreateAlarmButton(onClick: () -> Unit) {
+fun UpdateAlarmButton(onClick: () -> Unit) {
     Box(modifier = Modifier.fillMaxSize(.75f)) {
         Row(
             modifier = Modifier.fillMaxSize() ,
@@ -35,7 +35,7 @@ fun CreateAlarmButton(onClick: () -> Unit) {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colors.onPrimary,
-                        text = "Create Alarm"
+                        text = "Update Alarm"
                     )
                 },
                 onClick = { onClick() }
@@ -46,6 +46,6 @@ fun CreateAlarmButton(onClick: () -> Unit) {
 
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
 @Composable
-fun CreateAlarmButtonPreview() {
-    CreateAlarmButton(onClick = {})
+fun UpdateAlarmButtonPreview() {
+    UpdateAlarmButton(onClick = {})
 }

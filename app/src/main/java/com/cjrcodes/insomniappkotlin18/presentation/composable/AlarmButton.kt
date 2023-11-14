@@ -10,9 +10,9 @@ import androidx.wear.compose.material.Text
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 
 @Composable
-fun AlarmButton(alarm: Alarm, onClick: () -> Unit){
+fun AlarmButton(modifier: Modifier, alarm: Alarm, onClick: () -> Unit){
         Button(
-            onClick = { /*TODO*/ },
+            onClick = { alarm },
             modifier = Modifier.size(ButtonDefaults.DefaultButtonSize)
         ) {
             Text(text = alarm.time.toString())
@@ -23,5 +23,5 @@ fun AlarmButton(alarm: Alarm, onClick: () -> Unit){
     @Composable
     fun AlarmButtonPreview() {
         val alarm = Alarm(5)
-        AlarmButton(alarm, onClick = {})
+        AlarmButton(modifier = Modifier, alarm, onClick = {})
     }

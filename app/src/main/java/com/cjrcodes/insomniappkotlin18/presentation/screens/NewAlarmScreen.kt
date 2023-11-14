@@ -39,7 +39,7 @@ import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
-import com.cjrcodes.insomniappkotlin18.presentation.composable.CreateAlarmButton
+import com.cjrcodes.insomniappkotlin18.presentation.composable.UpdateAlarmButton
 import com.cjrcodes.insomniappkotlin18.presentation.destinations.WearAppDestination
 import com.cjrcodes.insomniappkotlin18.presentation.theme.InsomniappKotlin18Theme
 import com.ramcosta.composedestinations.annotation.Destination
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 
 @Destination
 @Composable
-fun NewAlarmScreen(navController: DestinationsNavigator) {
+fun NewAlarmScreen(newAlarmViewModel: NewAlarmViewModel, navController: DestinationsNavigator) {
 
     val newAlarmViewModel: NewAlarmViewModel = hiltViewModel()
 
@@ -68,8 +68,9 @@ fun NewAlarmScreen(navController: DestinationsNavigator) {
 
     InsomniappKotlin18Theme {
 
-        NewAlarmContent(minutesVal = minutesVal
-        ) { createAlarm(newAlarmViewModel, minutesVal ) }
+        NewAlarmContent(
+            minutesVal = minutesVal
+        ) { updateAlarm(newAlarmViewModel, minutesVal) }
     }
 }
 
@@ -94,7 +95,7 @@ fun NewAlarmContent(
                 color = MaterialTheme.colors.onPrimary,
             ),
 
-    timeText = {TimeText()}
+        timeText = { TimeText() }
     ) {
         Column(
             modifier =
@@ -110,7 +111,8 @@ fun NewAlarmContent(
 
 
             Text(
-                modifier = Modifier.padding(start = 0.dp, top = 24.dp, end = 0.dp, bottom = 0.dp)
+                modifier = Modifier
+                    .padding(start = 0.dp, top = 24.dp, end = 0.dp, bottom = 0.dp)
                     .align(Alignment.CenterHorizontally),
                 text = "Minutes",
                 style = TextStyle(color = Color.White)
@@ -137,12 +139,11 @@ fun NewAlarmContent(
                 userScrollEnabled = true
             ) {
                 Text(minutes[it])
-                minutesVal.value = it
-
+                minutesVal.value = it - 1
             }
 
 
-            CreateAlarmButton(onClick = onCreateAlarmClick)
+            UpdateAlarmButton(onClick = onCreateAlarmClick)
 
         }
 
@@ -150,8 +151,8 @@ fun NewAlarmContent(
 }
 
 
-fun createAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
-    newAlarmViewModel.createNewAlarm(Alarm(minutesVal.value))
+fun updateAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
+    newAlarmViewModel.updateAlarm(Alarm(minutesVal.value))
 }
 
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)

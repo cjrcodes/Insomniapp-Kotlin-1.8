@@ -46,10 +46,16 @@ open class NewAlarmViewModel @Inject constructor(
     val myData = alarmDao.getAll().asLiveData()
 
 
-    open fun createNewAlarm(alarm: Alarm) {
+    open fun createAlarm(alarm: Alarm) {
         viewModelScope.launch(Dispatchers.IO) {
             val alarmId = alarmDao.insert(alarm)
             _alarmCreated.value = true
+        }
+    }
+
+    fun updateAlarm(alarm: Alarm){
+        viewModelScope.launch(Dispatchers.IO) {
+            alarmDao.update(alarm)
         }
     }
 

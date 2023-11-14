@@ -9,7 +9,7 @@ import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.MaterialTheme
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
-import com.cjrcodes.insomniappkotlin18.presentation.composable.AddAlarmButton
+import com.cjrcodes.insomniappkotlin18.presentation.composable.EditAlarmButton
 import com.cjrcodes.insomniappkotlin18.presentation.composable.AlarmChip
 import com.cjrcodes.insomniappkotlin18.presentation.destinations.NewAlarmScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
@@ -37,7 +37,7 @@ fun ListAlarmScreen(alarms : List<Alarm>, navController: DestinationsNavigator) 
         }
 
             item {
-                AddAlarmButton {
+                EditAlarmButton {
                     navController.navigate(NewAlarmScreenDestination)
                 }
             }

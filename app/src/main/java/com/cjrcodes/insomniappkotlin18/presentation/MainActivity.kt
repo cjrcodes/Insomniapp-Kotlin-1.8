@@ -32,6 +32,7 @@ import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.presentation.destinations.NewAlarmScreenDestination
 import com.cjrcodes.insomniappkotlin18.presentation.destinations.WearAppDestination
 import com.cjrcodes.insomniappkotlin18.presentation.screens.TileAlarmScreen
 import com.cjrcodes.insomniappkotlin18.presentation.theme.InsomniappKotlin18Theme
@@ -59,7 +60,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         lifecycleScope.launch(Dispatchers.IO) {
-            //alarmDao.deleteAll();
+            alarmDao.deleteAll()
             val alarms = alarmDao.getAll().first()
             if (alarms.isEmpty()) {
                 val alarmMinutes = listOf(5, 10, 15, 20, 30, 45, 60)
@@ -81,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
     private fun insertAlarm(newAlarmViewModel: NewAlarmViewModel, alarm: Alarm) {
         lifecycleScope.launch(Dispatchers.IO) {
-            newAlarmViewModel.createNewAlarm(alarm)
+            newAlarmViewModel.createAlarm(alarm)
         }
     }
 }
@@ -106,9 +107,8 @@ fun WearApp(viewModel: NewAlarmViewModel, navigator: DestinationsNavigator) {
 
             TileAlarmScreen(
                 viewModel,
-                navController = navigator,
                 onAlarmClick = {},
-                onAddAlarmClick = {},
+                onQuickAlarmClick = {navigator.navigate(NewAlarmScreenDestination)},
                 onStatisticsMenuClick = {})
         }
 

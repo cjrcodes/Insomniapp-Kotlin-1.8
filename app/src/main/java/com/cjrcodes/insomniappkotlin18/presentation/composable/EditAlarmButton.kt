@@ -2,7 +2,7 @@ package com.cjrcodes.insomniappkotlin18.presentation.composable
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddAlarm
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -13,14 +13,14 @@ import androidx.wear.compose.material.Icon
 
 
 @Composable
-fun AddAlarmButton(onClick: () -> Unit) {
+fun EditAlarmButton(onClick: () -> Unit) {
             Button(
                 onClick = onClick,
                 modifier = Modifier.size(ButtonDefaults.DefaultButtonSize)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Add,
-                    contentDescription = "Add Alarm",
+                    imageVector = Icons.Default.AddAlarm,
+                    contentDescription = "Quick Edit Alarm",
                     modifier = Modifier.size(24.dp)
                 )
             }
@@ -29,6 +29,6 @@ fun AddAlarmButton(onClick: () -> Unit) {
 
 @Preview
 @Composable
-fun AddAlarmButtonPreview() {
-    AddAlarmButton(onClick = {})
+fun EditAlarmButtonPreview() {
+    EditAlarmButton(onClick = {})
 }

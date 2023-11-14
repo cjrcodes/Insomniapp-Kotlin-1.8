@@ -30,7 +30,7 @@ class MockNewAlarmViewModel(private val mockAlarmDao: MockAlarmDao) : NewAlarmVi
 
 
     // Override the createNewAlarm method to simulate the creation of a new alarm
-    override fun createNewAlarm(alarm: Alarm) {
+    override fun createAlarm(alarm: Alarm) {
         // You can add code here to simulate the creation of a new alarm
         viewModelScope.launch(Dispatchers.IO) {
             val alarmId = mockAlarmDao.insert(alarm)
