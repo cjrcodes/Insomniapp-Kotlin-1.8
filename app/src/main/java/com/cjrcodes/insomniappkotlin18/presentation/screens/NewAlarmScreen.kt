@@ -1,8 +1,8 @@
 package com.cjrcodes.insomniappkotlin18.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.focusable
-import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,8 +37,8 @@ import androidx.wear.compose.material.TimeText
 import androidx.wear.compose.material.rememberPickerState
 import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
-import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
-import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.AlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockAlarmViewModel
 import com.cjrcodes.insomniappkotlin18.presentation.composable.UpdateAlarmButton
 import com.cjrcodes.insomniappkotlin18.presentation.destinations.WearAppDestination
 import com.cjrcodes.insomniappkotlin18.presentation.theme.InsomniappKotlin18Theme
@@ -49,16 +49,15 @@ import kotlinx.coroutines.launch
 
 @Destination
 @Composable
-fun NewAlarmScreen(newAlarmViewModel: NewAlarmViewModel, navController: DestinationsNavigator) {
+fun NewAlarmScreen(navController: DestinationsNavigator) {
 
-    val newAlarmViewModel: NewAlarmViewModel = hiltViewModel()
-
+    val alarmViewModel: AlarmViewModel = hiltViewModel()
 
     val alarmCreated: State<Boolean> =
-        newAlarmViewModel.alarmCreated.collectAsState(initial = false)
+        alarmViewModel.alarmUpdated.collectAsState(initial = false)
 
 // When alarmCreated becomes true, navigate to the next screen
-    LaunchedEffect(alarmCreated.value) {
+    LaunchedEffect(alarmCreated) {
         if (alarmCreated.value) {
             navController.navigate(WearAppDestination)
         }
@@ -70,64 +69,67 @@ fun NewAlarmScreen(newAlarmViewModel: NewAlarmViewModel, navController: Destinat
 
         NewAlarmContent(
             minutesVal = minutesVal
-        ) { updateAlarm(newAlarmViewModel, minutesVal) }
+        ) {
+                alarmViewModel.updateUserAlarm(Alarm(minutesVal.intValue))
+        }
     }
 }
 
+
+// Define string resources and constants
+object Strings {
+    const val Minutes = "Minutes"
+}
+
+object Dimensions {
+    val PickerSize = 100.dp
+}
 
 @Composable
 fun NewAlarmContent(
     minutes: List<String> = (1..60).map { it.toString() },
     minutesVal: MutableState<Int>,
-    onCreateAlarmClick: () -> Unit
+    onUpdateQuickAlarmClick: () -> Unit
 ) {
-
     val coroutineScope = rememberCoroutineScope()
     val pickerState = rememberPickerState(minutes.size, 4, true)
-    val focusRequester = remember { FocusRequester() }
     val contentDescription by remember { derivedStateOf { "${pickerState.selectedOption + 1}" } }
 
+    val focusRequester = remember { FocusRequester() }
+
+    // Request focus when the composable is first composed
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
     Scaffold(
-
-
-        modifier = Modifier
-            .background(
-                color = MaterialTheme.colors.onPrimary,
-            ),
-
+        modifier = Modifier.background(color = MaterialTheme.colors.onPrimary),
         timeText = { TimeText() }
     ) {
         Column(
-            modifier =
-            Modifier
-                .fillMaxSize()
-                .background(
-                    color = MaterialTheme.colors.onPrimary,
-                ),
+            modifier = Modifier.fillMaxSize().background(color = MaterialTheme.colors.onPrimary),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
-
         ) {
-
-
+            // Display the minutes text
             Text(
-                modifier = Modifier
-                    .padding(start = 0.dp, top = 24.dp, end = 0.dp, bottom = 0.dp)
-                    .align(Alignment.CenterHorizontally),
-                text = "Minutes",
+                modifier = Modifier.padding(start = 0.dp, top = 24.dp, end = 0.dp, bottom = 0.dp).align(Alignment.CenterHorizontally),
+                text = Strings.Minutes,
                 style = TextStyle(color = Color.White)
             )
 
+            // Display the picker
             Picker(
                 modifier = Modifier
-
-                    .size(100.dp, 100.dp)
+                    .size(Dimensions.PickerSize)
                     .align(Alignment.CenterHorizontally)
                     .onRotaryScrollEvent {
                         coroutineScope.launch {
-                            pickerState.scrollBy(
-                                it.verticalScrollPixels
-                            )
+                            Log.d("Picker", "onRotaryScrollEvent: ${it.verticalScrollPixels}")
+                            if(it.verticalScrollPixels > 0)
+                                pickerState.animateScrollToOption(pickerState.selectedOption + 1)
+                            else
+                                pickerState.animateScrollToOption(pickerState.selectedOption - 1)
                         }
                         true
                     }
@@ -142,17 +144,14 @@ fun NewAlarmContent(
                 minutesVal.value = it - 1
             }
 
-
-            UpdateAlarmButton(onClick = onCreateAlarmClick)
-
+            // Display the update alarm button
+            UpdateAlarmButton(onClick = onUpdateQuickAlarmClick)
         }
-
     }
 }
 
-
-fun updateAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
-    newAlarmViewModel.updateAlarm(Alarm(minutesVal.value))
+fun updateQuickAlarm(alarmViewModel: AlarmViewModel, minutesVal: State<Int>) {
+    alarmViewModel.updateUserAlarm(Alarm(minutesVal.value))
 }
 
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
@@ -160,11 +159,11 @@ fun updateAlarm(newAlarmViewModel: NewAlarmViewModel, minutesVal: State<Int>) {
 fun NewAlarmScreenPreview() {
 
     //NewAlarmScreen(EmptyDestinationsNavigator)
-    val mockNewAlarmViewModel = MockNewAlarmViewModel(MockAlarmDao())
+    val mockAlarmViewModel = MockAlarmViewModel(MockAlarmDao())
     val minutesVal = remember { mutableIntStateOf(5) }
 
     NewAlarmContent(
         minutesVal = minutesVal,
-        onCreateAlarmClick = {}
+        onUpdateQuickAlarmClick = {}
     )
 }

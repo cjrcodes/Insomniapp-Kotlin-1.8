@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
 import com.cjrcodes.insomniappkotlin18.data.db.AlarmDatabase
-import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.AlarmViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,8 +26,8 @@ object AppModule {
     }
     @Provides
     fun provideNewAlarmViewModel( alarmDao: AlarmDao
-    ): NewAlarmViewModel {
-        return NewAlarmViewModel(alarmDao)
+    ): AlarmViewModel {
+        return AlarmViewModel(alarmDao)
     }
 
     @Provides

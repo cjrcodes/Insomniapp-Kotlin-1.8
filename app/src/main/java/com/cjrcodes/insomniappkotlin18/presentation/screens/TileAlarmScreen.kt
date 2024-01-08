@@ -10,7 +10,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
@@ -19,25 +18,32 @@ import androidx.wear.compose.foundation.lazy.items
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.data.model.Alarm
-import com.cjrcodes.insomniappkotlin18.domain.viewmodel.NewAlarmViewModel
-import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockNewAlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.AlarmViewModel
+import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockAlarmViewModel
 import com.cjrcodes.insomniappkotlin18.presentation.composable.AlarmButton
-import com.cjrcodes.insomniappkotlin18.presentation.composable.EditAlarmButton
+import com.cjrcodes.insomniappkotlin18.presentation.composable.AddAlarmButton
 import com.cjrcodes.insomniappkotlin18.presentation.composable.StatisticsMenuButton
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.EmptyDestinationsNavigator
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.wear.tooling.preview.devices.WearDevices
+import com.cjrcodes.insomniappkotlin18.presentation.destinations.ExtendedTimePickerScreenDestination
 
 
 @Destination
 @Composable
 fun TileAlarmScreen(
-    viewModel: NewAlarmViewModel,
+    viewModel: AlarmViewModel = viewModel(),
+    navigator: DestinationsNavigator,
     onAlarmClick: (Alarm) -> Unit,
-    onQuickAlarmClick: (Alarm) -> Unit,
+    onQuickAlarmClick: () -> Unit,
     onStatisticsMenuClick: () -> Unit
 ) {
     val scalingLazyListState = rememberScalingLazyListState(initialCenterItemIndex = 0)
 
-    val alarms by viewModel.alarms.collectAsState(initial = emptyList())
+    val alarms by viewModel.alarms.collectAsState()
+    val userAlarm by viewModel.userAlarm.collectAsState() // Collect userAlarm state
 
 
     ScalingLazyColumn(
@@ -54,14 +60,15 @@ fun TileAlarmScreen(
 
     ) {
 
-        items(alarms.dropLast(1).chunked(3)) { alarms ->
+        items(alarms.chunked(3)) { alarms ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
                 verticalAlignment = Alignment.CenterVertically // center items vertically
             ) {
                 alarms.forEach { alarm ->
-                    AlarmButton(Modifier.background(Color.Red)
-                        ,alarm) { onAlarmClick(alarm) }
+                    AlarmButton(
+                        Modifier.background(Color.Red), alarm
+                    ) { onAlarmClick(alarm) }
                 }
             }
         }
@@ -71,165 +78,55 @@ fun TileAlarmScreen(
                 horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
                 verticalAlignment = Alignment.CenterVertically // center items vertically
             ) {
-                if (alarms.isNotEmpty()) {
-                    val lastAlarm = alarms.last()
-                    AlarmButton(modifier = Modifier.background(Color.Green), lastAlarm) { onAlarmClick(lastAlarm) }
+                userAlarm?.let {
+                    AlarmButton(
+                        modifier = Modifier.background(Color.Green),
+                        it
+                    ) { onAlarmClick(userAlarm!!) }
                 }
-                EditAlarmButton(onClick = { onQuickAlarmClick})
+                AddAlarmButton(
+                    modifier = Modifier,
+                    onClick = { navigator.navigate(ExtendedTimePickerScreenDestination) })
                 StatisticsMenuButton(onClick = onStatisticsMenuClick)
-            }
-        }
 
-        /*item {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
-            verticalAlignment = Alignment.CenterVertically // center items vertically
-        ) {
-            AlarmButton(Alarm(60)) { }
-            AddAlarmButton(onClick = onAddAlarmClick)
-            StatisticsMenuButton(onClick = onStatisticsMenuClick)
+            }
+
         }
-    }*/
     }
 }
 
 
-/*fun TileAlarmScreen(alarms: List<Alarm>, navController: DestinationsNavigator) {
+val mockAlarmViewModel = MockAlarmViewModel(MockAlarmDao())
 
-    val scalingLazyListState = rememberScalingLazyListState()
-
-    //val alarms by viewModel.alarms.collectAsState(initial = emptyList())
-
-    ScalingLazyColumn(
-        state = scalingLazyListState,
-        scalingParams = ScalingLazyColumnDefaults.scalingParams(
-            edgeScale = 0.5f,
-            minTransitionArea = 0.65f,
-            maxTransitionArea = 0.70f
-        ),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxSize() // fill the entire screen
-    ) {
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
-                verticalAlignment = Alignment.CenterVertically // center items vertically
-            ) {
-                AlarmButton(alarms[0], onClick = { *//*TODO*//* })
-
-                AlarmButton(alarms[1], onClick = { *//*TODO*//* })
-
-            }
-        }
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
-                verticalAlignment = Alignment.CenterVertically // center items vertically
-            ) {
-                AlarmButton(alarms[2], onClick = { *//*TODO*//* })
-                AlarmButton(alarms[3], onClick = { *//*TODO*//* })
-                AlarmButton(alarms[4], onClick = { *//*TODO*//* })
-
-            }
-        }
-
-        // Add the other rows in a similar way
-
-        item {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
-                verticalAlignment = Alignment.CenterVertically // center items vertically
-            ) {
-                AlarmButton(alarms[5], onClick = { *//*TODO*//* })
-
-
-                AddAlarmButton {
-                    // Handle click event
-                }
-
-                StatisticsMenuButton(onClick = { *//*TODO*//* })
-
-            }
-        }
-    }
-}*/
-
-val mockNewAlarmViewModel = MockNewAlarmViewModel(MockAlarmDao())
-
-
-@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
+@Preview(showBackground = true, device = WearDevices.LARGE_ROUND)
 @Composable
-fun PreviewTileList() {
+fun TileAlarmScreenPreview() {
     TileAlarmScreen(
-        mockNewAlarmViewModel,
+        mockAlarmViewModel,
+        EmptyDestinationsNavigator,
         onAlarmClick = {},
         onQuickAlarmClick = {},
         onStatisticsMenuClick = {})
 }
 
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
+@Preview(showBackground = true, device = WearDevices.SMALL_ROUND)
 @Composable
 fun SmallPreviewTileList() {
     TileAlarmScreen(
-        mockNewAlarmViewModel,
+        mockAlarmViewModel,
+        EmptyDestinationsNavigator,
         onAlarmClick = {},
         onQuickAlarmClick = {},
         onStatisticsMenuClick = {})
 }
 
-@Preview(device = Devices.WEAR_OS_SQUARE, showSystemUi = true)
+@Preview(showBackground = true, device = WearDevices.SQUARE)
 @Composable
 fun SquarePreviewTileListPreview() {
     TileAlarmScreen(
-        mockNewAlarmViewModel,
+        mockAlarmViewModel,
+        EmptyDestinationsNavigator,
         onAlarmClick = {},
         onQuickAlarmClick = {},
         onStatisticsMenuClick = {})
 }
-
-
-/*
-@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)
-@Composable
-fun PreviewTileList() {
-    val mockNewAlarmViewModel = MockNewAlarmViewModel(mockAlarmDao = MockAlarmDao())
-    TileAlarmScreen(  listOf(
-        Alarm(5),
-        Alarm(10),
-        Alarm(15),
-        Alarm(30),
-        Alarm(45),
-        Alarm(60)
-    )
-    , EmptyDestinationsNavigator)
-}
-
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true)
-@Composable
-fun SmallPreviewTileList() {
-    val mockNewAlarmViewModel = MockNewAlarmViewModel(mockAlarmDao = MockAlarmDao())
-    TileAlarmScreen(listOf(
-        Alarm(5),
-        Alarm(10),
-        Alarm(15),
-        Alarm(30),
-        Alarm(45),
-        Alarm(60)
-    ), EmptyDestinationsNavigator)
-}
-
-@Preview(device = Devices.WEAR_OS_SQUARE, showSystemUi = true)
-@Composable
-fun SquarePreviewTileList() {
-    val mockNewAlarmViewModel = MockNewAlarmViewModel(mockAlarmDao = MockAlarmDao())
-    TileAlarmScreen(listOf(
-        Alarm(5),
-        Alarm(10),
-        Alarm(15),
-        Alarm(30),
-        Alarm(45),
-        Alarm(60)
-    ), EmptyDestinationsNavigator)
-}*/

@@ -13,7 +13,7 @@ import androidx.wear.compose.material.Icon
 
 
 @Composable
-fun EditAlarmButton(onClick: () -> Unit) {
+fun AddAlarmButton(modifier: Modifier, onClick: () -> Unit) {
             Button(
                 onClick = onClick,
                 modifier = Modifier.size(ButtonDefaults.DefaultButtonSize)
@@ -30,5 +30,5 @@ fun EditAlarmButton(onClick: () -> Unit) {
 @Preview
 @Composable
 fun EditAlarmButtonPreview() {
-    EditAlarmButton(onClick = {})
+    AddAlarmButton(modifier = Modifier, onClick = {})
 }

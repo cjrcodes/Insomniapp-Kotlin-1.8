@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="deploymentTargetDropDown">
-    <targetSelectedWithDropDown>
-      <Target>
-        <type value="QUICK_BOOT_TARGET" />
-        <deviceKey>
-          <Key>
-            <type value="VIRTUAL_DEVICE_PATH" />
-            <value value="$USER_HOME$/.android/avd/Wear_OS_Large_Round_API_30.avd" />
-          </Key>
-        </deviceKey>
-      </Target>
-    </targetSelectedWithDropDown>
-    <timeTargetWasSelectedWithDropDown value="2023-11-06T19:38:02.321883Z" />
+    <value>
+      <entry key="ExtendedTimePickerScreenPreview">
+        <State />
+      </entry>
+      <entry key="ExtendedTimePickerScreenSmallRoundPreview">
+        <State />
+      </entry>
+      <entry key="ExtendedTimePickerScreenSquarePreview">
+        <State />
+      </entry>
+      <entry key="TileAlarmScreenPreview">
+        <State />
+      </entry>
+      <entry key="app">
+        <State />
+      </entry>
+    </value>
   </component>
 </project>
