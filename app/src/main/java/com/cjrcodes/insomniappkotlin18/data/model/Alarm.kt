@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "alarms")
 data class Alarm(
-    @ColumnInfo(name ="time")val time: Int,
+    @ColumnInfo(name = "hour") val hour: Int,
+    @ColumnInfo(name = "minute") val minute: Int,
     @PrimaryKey(autoGenerate = true) val id: Long = 0
 ) {
     /*private fun parseTime(time: String): LocalTime {

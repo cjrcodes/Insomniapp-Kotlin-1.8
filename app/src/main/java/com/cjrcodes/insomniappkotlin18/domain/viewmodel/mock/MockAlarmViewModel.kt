@@ -16,18 +16,18 @@ class MockAlarmViewModel(private val mockAlarmDao: MockAlarmDao) : AlarmViewMode
 
     override val alarms: StateFlow<List<Alarm>> = MutableStateFlow(
         listOf(
-            Alarm(5),
-            Alarm(10),
-            Alarm(15),
-            Alarm(30),
-            Alarm(45),
-            Alarm(60)
+            Alarm(0, 5),
+            Alarm(0, 10),
+            Alarm(0, 15),
+            Alarm(0, 30),
+            Alarm(0, 45),
+            Alarm(1, 0) // 60 minutes is equivalent to 1 hour
         )
     )
 
 
     // Override the createNewAlarm method to simulate the creation of a new alarm
-    override fun updateUserAlarm(alarm: Alarm) {
+    fun updateUserAlarm(alarm: Alarm) {
         // You can add code here to simulate the creation of a new alarm
         viewModelScope.launch(Dispatchers.IO) {
             val alarmId = mockAlarmDao.insert(alarm)

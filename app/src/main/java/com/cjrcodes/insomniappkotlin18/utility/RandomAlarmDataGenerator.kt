@@ -11,12 +11,14 @@ class RandomAlarmDataGenerator {
         val random = ThreadLocalRandom.current()
 
         for (i in 0 until size) {
+            val randomHour = random.nextInt(0, 24)
+
             val randomMinute = random.nextInt(0, 60)
           /*  val randomSecond = if (randomMinute == 60) 0 else random.nextInt(0, 60)
             val randomTime = "$randomMinute:$randomSecond"
             val randomMaxHeartRate = random.nextInt(40, 120)*/
 
-            alarms.add(Alarm(randomMinute))
+            alarms.add(Alarm(randomHour, randomMinute))
         }
         return alarms
 

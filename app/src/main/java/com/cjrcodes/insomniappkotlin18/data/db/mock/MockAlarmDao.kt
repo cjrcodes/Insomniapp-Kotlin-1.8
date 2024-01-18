@@ -15,12 +15,12 @@ class MockAlarmDao : AlarmDao {
     override fun getAll(): Flow<List<Alarm>> {
         return flowOf(
             listOf(
-                Alarm(5),
-                Alarm(10),
-                Alarm(15),
-                Alarm(30),
-                Alarm(45),
-                Alarm(60)
+                Alarm(0, 5),
+                Alarm(0, 10),
+                Alarm(0, 15),
+                Alarm(0, 30),
+                Alarm(0, 45),
+                Alarm(1, 0) // 60 minutes is equivalent to 1 hour
             )
         )
     }
@@ -28,17 +28,16 @@ class MockAlarmDao : AlarmDao {
 
     @Query("SELECT * FROM alarms WHERE id = :id")
     override fun getById(id: Int): Alarm? {
-        return Alarm(5)
+        return Alarm(0, 5)
     }
 
-    @Query("SELECT * FROM alarms WHERE time = :time")
+    @Query("SELECT * FROM alarms WHERE hour AND minute = :time")
     override fun findAlarmByTime(time: String): Alarm? {
-        return Alarm(5)
+        return Alarm(0, 5)
     }
 
     @Insert
-    override fun insert(alarm: Alarm): Long {
-        return 5
+    override suspend fun insert(alarm: Alarm) {
     }
 
     @Update
@@ -46,7 +45,7 @@ class MockAlarmDao : AlarmDao {
     }
 
     @Delete
-    override fun delete(alarm: Alarm) {
+    override suspend fun delete(alarm: Alarm) {
     }
 
     @Query("DELETE FROM alarms")

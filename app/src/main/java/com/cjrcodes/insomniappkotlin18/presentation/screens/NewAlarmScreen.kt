@@ -70,7 +70,7 @@ fun NewAlarmScreen(navController: DestinationsNavigator) {
         NewAlarmContent(
             minutesVal = minutesVal
         ) {
-                alarmViewModel.updateUserAlarm(Alarm(minutesVal.intValue))
+                //alarmViewModel.updateAlarm(Alarm(minutesVal.intValue))
         }
     }
 }
@@ -150,8 +150,8 @@ fun NewAlarmContent(
     }
 }
 
-fun updateQuickAlarm(alarmViewModel: AlarmViewModel, minutesVal: State<Int>) {
-    alarmViewModel.updateUserAlarm(Alarm(minutesVal.value))
+fun updateQuickAlarm(alarmViewModel: AlarmViewModel, hoursVal: State<Int>, minutesVal: State<Int>) {
+    alarmViewModel.updateAlarm(Alarm(hoursVal.value, minutesVal.value))
 }
 
 @Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true)

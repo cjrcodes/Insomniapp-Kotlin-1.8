@@ -30,24 +30,24 @@ fun AlarmChip(alarm: Alarm) {
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
-        ){
-        Chip(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
+        ) {
+            Chip(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
 
-            label = {
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colors.onPrimary,
-                    text = "${alarm.time} Minutes"
-                )
-            },
-            onClick = {}
-        )
+                label = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colors.onPrimary,
+                        text = "${if (alarm.hour != 0) "${alarm.hour}:" else ""}${alarm.minute}"
+                    )
+                },
+                onClick = {}
+            )
+        }
     }
-}
 
 }
 
@@ -55,13 +55,15 @@ fun AlarmChip(alarm: Alarm) {
 @Composable
 fun AlarmChipPreview() {
     val random = ThreadLocalRandom.current()
+    val randomHour = random.nextInt(0, 24)
+
     val randomMinute = random.nextInt(0, 60)
     /*val randomSecond = if (randomMinute == 60) "00" else random.nextInt(0, 60)
 
     val randomMaxHeartRate = random.nextInt(40, 120)*/
 
     val alarm = Alarm(
-        time = randomMinute
+        randomHour, randomMinute
     )
 
     AlarmChip(alarm)

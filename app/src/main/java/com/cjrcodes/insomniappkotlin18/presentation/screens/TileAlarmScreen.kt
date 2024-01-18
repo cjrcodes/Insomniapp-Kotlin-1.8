@@ -78,11 +78,11 @@ fun TileAlarmScreen(
                 horizontalArrangement = Arrangement.spacedBy(5.dp), // space between items
                 verticalAlignment = Alignment.CenterVertically // center items vertically
             ) {
-                userAlarm?.let {
+                userAlarm?.let { alarm ->
                     AlarmButton(
                         modifier = Modifier.background(Color.Green),
-                        it
-                    ) { onAlarmClick(userAlarm!!) }
+                        alarm,
+                    ) { onAlarmClick(alarm) }
                 }
                 AddAlarmButton(
                     modifier = Modifier,

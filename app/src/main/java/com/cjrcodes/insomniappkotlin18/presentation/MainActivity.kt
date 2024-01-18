@@ -4,16 +4,18 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.compose.material.Scaffold
 import androidx.wear.compose.material.TimeText
+import androidx.wear.tooling.preview.devices.WearDevices.LARGE_ROUND
+import androidx.wear.tooling.preview.devices.WearDevices.SMALL_ROUND
+import androidx.wear.tooling.preview.devices.WearDevices.SQUARE
 import com.cjrcodes.insomniappkotlin18.data.db.AlarmDao
+import com.cjrcodes.insomniappkotlin18.data.db.AlarmDatabase
 import com.cjrcodes.insomniappkotlin18.data.db.mock.MockAlarmDao
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.AlarmViewModel
 import com.cjrcodes.insomniappkotlin18.domain.viewmodel.mock.MockAlarmViewModel
@@ -43,6 +45,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        alarmDao = AlarmDatabase.getDatabase(this).alarmDao()
+
+       
 
         lifecycleScope.launch(Dispatchers.IO) {
             val alarms = alarmDao.getAll().first()
@@ -83,19 +88,19 @@ fun WearApp(viewModel: AlarmViewModel, navigator: DestinationsNavigator) {
     }
 }
 
-@Preview(device = Devices.WEAR_OS_SMALL_ROUND, showSystemUi = true, name = "Small Round Screen")
+@Preview(device = SMALL_ROUND, showSystemUi = true, name = "Small Round Screen")
 @Composable
 fun MainPreviewSmallRound() {
     WearApp(MockAlarmViewModel(MockAlarmDao()), EmptyDestinationsNavigator)
 }
 
-@Preview(device = Devices.WEAR_OS_LARGE_ROUND, showSystemUi = true, name = "Large Round Screen")
+@Preview(device = LARGE_ROUND, showSystemUi = true, name = "Large Round Screen")
 @Composable
 fun MainPreviewLargeRound() {
     WearApp(MockAlarmViewModel(MockAlarmDao()), EmptyDestinationsNavigator)
 }
 
-@Preview(device = Devices.WEAR_OS_SQUARE, showSystemUi = true, name = "Square Screen")
+@Preview(device = SQUARE, showSystemUi = true, name = "Square Screen")
 @Composable
 fun MainPreviewSquare() {
     WearApp(MockAlarmViewModel(MockAlarmDao()), EmptyDestinationsNavigator)
